@@ -73,6 +73,134 @@ Plugins from Context:  south
   workspace           A group of Kubernetes namespaces                                mission-control  v0.0.1   installed
 ----
 
-. Finally, now that your machine is ready for working with Tanzu, navigate back to the TMC GUI to create your first cluster.  
+. link:https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-5708F04E-7EA3-495D-A484-FD6DB7AA8356.html[Follow the instructions here to create a 
+VPC with the proper subnets]
+
+. Finally, now that your IaaS is paved and machine is ready for working with Tanzu, navigate back to the TMC GUI to create your 
+first cluster.  
+
+
+= Part 2 - Creating an EKS Cluster from TMC
+
+. In order to operate on AWS, TMC needs to be configured with a Credential for AWS.  Please navigate to the TMC GUI lower 
+left side "Administration" and then click "CREATE CREDENTIAL", choosing "AWS EKS" form the dropdown.  Follow the product led instructions 
+to generate your credential via a Cloud Formation Stack.  Wait for the stack to finish completing successfully.
+
+. In TMC navigate to "Cluster Group" and then select "CREATE CLUSTER GROUP", creating a group per your preferences.  
+
+. Now to create a cluster.  Navigate to "Clusters" and then select "ADD CLUSTER", choosing "Create EKS Cluster" from the dropdown.  You will be selecting your new 
+credential, and VPC during the process. TODO: Show some screenshot defaults
+
+= Part 3 -  Configuring your Cluster kube-system ConfigMap
+
+This step ensures that TMC is able to be operated on your behalf given it has already initially provisioned your 
+cluster. Follow along the link:https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html[AWS add-user-role] 
+guide here, or simply run the following command to edit your config map in real time:
++
+----
+kubectl edit -n kube-system configmap/aws-auth
+
+#Add the following to the configmap, using your own userarn and username who is authenticated at the commmand line already for 
+the AWS CLI.
+
+  mapUsers: |
+    - groups:
+      - system:masters
+      userarn: arn:aws:iam::5027541610797:user/tanzuadmin
+      username: tanzuadmin
+----
+
+= Part 4 - Create an IAM policy on AWS
+
+. Download the default IAM policy from AWS here: 
++
+----
+$ curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.7/docs/install/iam_policy.json
+----
+
+. Create the IAM policy
++
+----
+$ aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-document file://iam_policy.json
+{
+    "Policy": {
+        "PolicyName": "AWSLoadBalancerControllerIAMPolicy",
+        "PolicyId": "XXXXXXXXXXXXXXXXXXXXXX",
+        "Arn": "arn:aws:iam::XXXXXXXXXXXXX:policy/AWSLoadBalancerControllerIAMPolicy",
+        "Path": "/",
+        "DefaultVersionId": "v1",
+        "AttachmentCount": 0,
+        "PermissionsBoundaryUsageCount": 0,
+        "IsAttachable": true,
+        "CreateDate": "2023-06-30T19:20:37+00:00",
+        "UpdateDate": "2023-06-30T19:20:37+00:00"
+    }
+}
+----
+
+= Part 5 - Associate IAM OIDC Provider and create IAM service account
+
+. Associating IAM OIDC provider
++
+----
+$ eksctl utils associate-iam-oidc-provider \
+    --region us-east-2 \
+    --cluster XXXXX \
+    --approve
+----
+
+. Create IAM service account
++
+----
+$ eksctl create iamserviceaccount \
+  --cluster=XXXX \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn=arn:aws:iam::XXXXXXXXXXXX:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve
+----
+
+= Part 6 - HELM
+
+. Add the eks-charts Helm repo and install the AWS load balancer controller
++
+----
+$ helm repo add eks https://aws.github.io/eks-charts
+
+$ helm repo update eks
+
+$ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=XXXX \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller
+----
+
+= Part 7 - Deploy App
+
+. Deploy an AWS sample app with ingress
++
+----
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.7/docs/examples/2048/2048_full.yaml
+----
+
+. Check the ingress
++
+----
+$ kubectl get ingress/ingress-2048 -n game-2048
+----
+
+
+= References
+
+https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html
+https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
+https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+
+
+
+
+
 
 
