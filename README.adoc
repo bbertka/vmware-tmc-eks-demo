@@ -39,6 +39,16 @@ plugins. Follow all the steps through "Verify your updated plug-ins".  You have 
 +
 ----
 $ tanzu plugin list
+Standalone Plugins
+  NAME                DESCRIPTION                                                        TARGET      DISCOVERY  VERSION  STATUS
+  isolated-cluster    isolated-cluster operations                                                    default    v0.28.0  installed
+  login               Login to the platform                                                          default    v0.28.0  installed
+  pinniped-auth       Pinniped authentication operations (usually not directly invoked)              default    v0.28.0  installed
+  management-cluster  Kubernetes management-cluster operations                           kubernetes  default    v0.28.0  installed
+  package             Tanzu package management                                           kubernetes  default    v0.28.0  installed
+  secret              Tanzu secret management                                            kubernetes  default    v0.28.0  installed
+  telemetry           Configure cluster-wide telemetry settings                          kubernetes  default    v0.28.0  installed
+
 Plugins from Context:  south
   NAME                DESCRIPTION                                                     TARGET           VERSION  STATUS
   account             Account for tmc resources                                       mission-control  v0.0.1   installed
@@ -63,10 +73,6 @@ Plugins from Context:  south
   workspace           A group of Kubernetes namespaces                                mission-control  v0.0.1   installed
 ----
 
-
-
-
-
-
+. Finally, now that your machine is ready for working with Tanzu, navigate back to the TMC GUI to create your first cluster.  
 
 
