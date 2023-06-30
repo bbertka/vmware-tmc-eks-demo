@@ -96,7 +96,7 @@ credential, and VPC during the process. TODO: Show some screenshot defaults
 This step ensures that TMC is able to be operated on your behalf given it has already initially provisioned your 
 cluster. Follow along the link:https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html[AWS add-user-role] 
 guide here, or simply run the following command to edit your config map in real time:
-+
+
 ----
 kubectl edit -n kube-system configmap/aws-auth
 
