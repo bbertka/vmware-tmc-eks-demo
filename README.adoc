@@ -1,21 +1,18 @@
 = VMware Tanzu Mission Control Demo (EKS w/ALB)
 
 == About 
-
 This is a guick guide to depoly a TMC managed EKS cluster with AWS ALB and starter application.  This guide will 
 walk through the process of setting up the reauired VPC and  AWS credentials TMC needs to deploy a three node EKS 
 cluster. AWS Application Load Balancer will be enabled and a common sample app deployed to the Kubernetes cluster.  
 Various verification and troubleshooting steps will be performed throughtou this tutorial as well.
 
 == Assumptions
-
 * You have access to AWS, and your organizization has provided you access to Tanzu Mission Control (TMC).  
-
-= Part 1 - Requirements
-If you are currently already developing with EKS and Kubernetes, feel free to skip to Part 2. Otherwise, visit 
-link:https://github.com/bbertka/setup-eks-dev-env[Setting up your EKS Dev Environment] for instructions on how to 
+* If you are currently already developing with EKS and Kubernetes, feel free to begin Part 1. Otherwise, visit
+link:https://github.com/bbertka/setup-eks-dev-env[Setting up your EKS Dev Environment] for instructions on how to
 set up your machine with the proper tools needed to continue this lab.
 
+= Part 1 - Tanzu CLI
 . Generate a Tanzu API key and install the Tanzu CLI by logging into your organization's TMC instance, then 
 navigate to the lower left panel and select "Automation Center".  Follow the instructions there to Get an API 
 token, Initialize the CLI and log in, and Try out the CLI.  
@@ -61,24 +58,18 @@ Plugins from Context:  south
 
 . link:https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-5708F04E-7EA3-495D-A484-FD6DB7AA8356.html[Follow the instructions here to create a 
 VPC with the proper subnets]
-
 . Finally, now that your IaaS is paved and machine is ready for working with Tanzu, navigate back to the TMC GUI to create your 
 first cluster.  
 
-
 = Part 2 - Creating an EKS Cluster from TMC
-
 . In order to operate on AWS, TMC needs to be configured with a Credential for AWS.  Please navigate to the TMC GUI lower 
 left side "Administration" and then click "CREATE CREDENTIAL", choosing "AWS EKS" form the dropdown.  Follow the product led instructions 
 to generate your credential via a Cloud Formation Stack.  Wait for the stack to finish completing successfully.
-
 . In TMC navigate to "Cluster Group" and then select "CREATE CLUSTER GROUP", creating a group per your preferences.  
-
 . Now to create a cluster.  Navigate to "Clusters" and then select "ADD CLUSTER", choosing "Create EKS Cluster" from the dropdown.  You will be selecting your new 
 credential, and VPC during the process. TODO: Show some screenshot defaults
 
 = Part 3 -  Configuring your Cluster kube-system ConfigMap
-
 This step ensures that TMC is able to be operated on your behalf given it has already initially provisioned your 
 cluster. Follow along the link:https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html[AWS add-user-role] 
 guide here, or simply run the following command to edit your config map in real time:
