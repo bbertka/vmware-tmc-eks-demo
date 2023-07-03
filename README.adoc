@@ -18,21 +18,7 @@ set up your machine with the proper tools needed to continue this lab.
 
 . Generate a Tanzu API key and install the Tanzu CLI by logging into your organization's TMC instance, then 
 navigate to the lower left panel and select "Automation Center".  Follow the instructions there to Get an API 
-token, Initialize the CLI and log in, and Try out the CLI.  You have completed this step successfully if you can 
-return the following output from the commands:
-+
-----
-$ tanzu plugin list
-Standalone Plugins
-  NAME                DESCRIPTION                                                        TARGET      DISCOVERY  VERSION  STATUS
-  isolated-cluster    isolated-cluster operations                                                    default    v0.28.0  installed
-  login               Login to the platform                                                          default    v0.28.0  installed
-  pinniped-auth       Pinniped authentication operations (usually not directly invoked)              default    v0.28.0  installed
-  management-cluster  Kubernetes management-cluster operations                           kubernetes  default    v0.28.0  installed
-  package             Tanzu package management                                           kubernetes  default    v0.28.0  installed
-  secret              Tanzu secret management                                            kubernetes  default    v0.28.0  installed
-  telemetry           Configure cluster-wide telemetry settings                          kubernetes  default    v0.28.0  installed
-----
+token, Initialize the CLI and log in, and Try out the CLI.  
 
 . Next, follow the link:https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzu-cli-ref-tmc/quickstart.html[Tanzu quickstart guide here] to create a TMC context, and sync your TMC 
 plugins. Follow all the steps through "Verify your updated plug-ins".  You have completed this step properly if you can generate the following output with the command:
